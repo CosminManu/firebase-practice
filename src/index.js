@@ -1,6 +1,6 @@
 import { initializeApp } from 'firebase/app'
 import {
-    getFirestore, collection, getDocs, getDoc, doc
+    getFirestore, collection, getDocs,
 } from 'firebase/firestore'
 
 const firebaseConfig = {
@@ -35,5 +35,15 @@ const firebaseConfig = {
         console.log(err)
     })
 
+//adding documents
+const addBookForm = document.querySelector('.add')
+addBookForm.addEventListener('submit', (e) => {
+    e.preventDefault()
+})
 
+//deleting documents
+const deleteBookForm = document.querySelector('.delete')
+deleteBookForm.addEventListener('submit', (e) => {
+    e.preventDefault()
+})
 
