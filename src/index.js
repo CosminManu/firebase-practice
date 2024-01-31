@@ -9,6 +9,13 @@ import {
     updateDoc
 } from 'firebase/firestore'
 
+import {
+    getAuth,
+    createUserWithEmailAndPassword,
+    signOut, signInWithEmailAndPassword
+} from 'firebase/auth'
+
+
 const firebaseConfig = {
     apiKey: "AIzaSyDp36JQREcVq9qXA8Js3SziYWLOuSVEJX8",
     authDomain: "test-d2771.firebaseapp.com",
@@ -23,6 +30,7 @@ const firebaseConfig = {
 
   //init serv
   const db = getFirestore()
+  const auth = getAuth()    //initialize auth service - sign in, log in, log out
 
   //get the reference to the collection in the db
   const collectionRef = collection(db, 'books')
@@ -79,6 +87,8 @@ onSnapshot(documentRef, (doc) => {
     console.log(doc.data(), doc.id)
 })
 
+
+//update a document from collection
 const updateBookForm = document.querySelector('.update')
 updateBookForm.addEventListener('submit', (e) => {
     e.preventDefault()
@@ -90,4 +100,49 @@ updateBookForm.addEventListener('submit', (e) => {
     .then(() => {
         updateBookForm.reset()
     })
+})
+
+//Sign Up Form
+const signupForm = document.querySelector('.signup')
+signupForm.addEventListener('submit', (e) => {
+    e.preventDefault()
+
+    const email = signupForm.email.value
+    const password = signupForm.password.value
+    createUserWithEmailAndPassword(auth, email, password)
+        .then((credential) => {
+            console.log('user created: ', credential.user)
+            signupForm.reset()
+        })
+        .catch((err) => {
+            console.log(err.message)
+        })
+})
+
+// Logout
+const logoutBtn = document.querySelector('.logout')
+logoutBtn.addEventListener('click', (e) => {
+    signOut(auth)
+        .then(() => {
+            console.log('User signed out')
+        })
+        .catch((err) => {
+            console.log(err.message)
+        })
+})
+
+//Login
+const loginForm = document.querySelector('.login')
+loginForm.addEventListener('submit', (e) => {
+    e.preventDefault()
+
+    const email = loginForm.email.value
+    const password = loginForm.password.value
+    signInWithEmailAndPassword(auth, email, password)
+        .then((credential) => {
+            console.log('user logged in: ', credential.user)
+        })        
+        .catch((err) => {
+            console.log(err.message)
+        })
 })
