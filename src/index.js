@@ -1,7 +1,9 @@
 import { initializeApp } from 'firebase/app'
 import {
     getFirestore, collection, getDocs, onSnapshot,
-    addDoc, deleteDoc, doc
+    addDoc, deleteDoc, doc,
+    query, where,
+    orderBy
 } from 'firebase/firestore'
 
 const firebaseConfig = {
@@ -22,9 +24,10 @@ const firebaseConfig = {
   //get the reference to the collection in the db
   const collectionRef = collection(db, 'books')
 
+  const q = query(collectionRef, where("author", "==", "I L Caragiale"), orderBy('title', 'desc'))
 
   // get real time collection data
-onSnapshot(collectionRef, (snapshot) => {
+onSnapshot(q, (snapshot) => {
     let books = []
     snapshot.docs.forEach((doc) => {
         books.push( {...doc.data(), id: doc.id})
@@ -36,7 +39,6 @@ onSnapshot(collectionRef, (snapshot) => {
 const addBookForm = document.querySelector('.add')
 addBookForm.addEventListener('submit', (e) => {
     e.preventDefault()
-    
     addDoc(collectionRef, {
         title: addBookForm.title.value,
         author: addBookForm.author.value
@@ -57,4 +59,7 @@ deleteBookForm.addEventListener('submit', (e) => {
             deleteBookForm.reset()
         })
 })
+
+
+// queries
 
